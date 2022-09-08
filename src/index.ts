@@ -38,6 +38,13 @@ export default (): Plugin =>  {
       if (chunk.isEntry) {
         return { code: `${getInsertCode()}${code}` }
       }
+    },
+    writeBundle(_opts, bundles) {
+      // delete css assets
+      const cssAssets = Object.keys(bundles).filter(key => bundles[key].type === 'asset' &&  bundles[key].fileName.endsWith('.css'))
+      cssAssets.forEach(key => {
+        delete bundles[key]
+      })
     }
   }
 }
