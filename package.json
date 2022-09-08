@@ -1,0 +1,21 @@
+{
+  "name": "vite-plugin-solidjs-sense-css-inline",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn clean && tsc -p ./",
+    "clean": "rm -rf ./dist"
+  },
+  "dependencies": {
+    "typescript": "^4.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.15",
+    "ts-node": "^10.9.1",
+    "vite": "^3.1.0"
+  }
+}
