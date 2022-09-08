@@ -3,14 +3,14 @@ import { NodeFactory, NodeFlags, Statement, SyntaxKind } from "typescript";
 export function getInsertCode() {
   return `
 window.onMountInsertCssInlineStyle = function (id, code) {
-  let style = document.querySelector(id)
+  let style = document.querySelector(\`#\${id}\`)
   if (!style) {
     style = document.createElement('style')
-    style.id = \`#\${id}\`
+    style.id = \`\${id}\`
     style.innerHTML = code
   }
   style.dataset.count = \`\${parseFloat(style.dataset.count || '0') + 1}\`
-  const head = document.querySelector('head')
+  const head = document.head
   if (head && !head.contains(style)) {
     head.appendChild(style)
   }
@@ -78,7 +78,7 @@ export const getStyleManageCode = (factory: NodeFactory, id: string, code: strin
             factory.createCallExpression(
               factory.createIdentifier("onMountInsertCssInlineStyle"),
               undefined,
-              [factory.createStringLiteral(`#${id}`), factory.createIdentifier(code)]
+              [factory.createStringLiteral(`${id}`), factory.createIdentifier(code)]
             )
           ))],
           true
