@@ -1,3 +1,4 @@
+import { customAlphabet } from 'nanoid';
 import {
   createSourceFile,
   factory,
@@ -22,6 +23,8 @@ import {
   isJsxElement} from 'typescript';
 import { getStyleManageCode } from './code';
 import { inlineCssModuleLineRE, solidjsRE } from './constant';
+
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwzyABCDEFGHIJKLMNOPQRSTUVWZY', 10)
 
 const isJSXFunction = (node: Node): boolean => {
   if (isJsxFragment(node) || isJsxElement(node)) {
@@ -117,7 +120,6 @@ export function wrapInlineCss(name: string, file: string, target: keyof typeof S
           isJSXFunction(node)
         ) {
           const styleContent = inlineStylesNames.reduce((a, c) => `${a ? `${a} + ${c}` : c}`, '')
-          const id = inlineStylesNames.reduce((a,c ) => `${c[0]}Id${a}`, `${Math.random()}`.slice(-6))
           return factory.updateFunctionDeclaration(
             node,
             node.modifiers,
@@ -126,7 +128,7 @@ export function wrapInlineCss(name: string, file: string, target: keyof typeof S
             node.typeParameters,
             node.parameters,
             node.type,
-            factory.createBlock(getStyleManageCode(factory, id, styleContent).concat(node.body?.statements || []))
+            factory.createBlock(getStyleManageCode(factory, nanoid(), styleContent).concat(node.body?.statements || []))
           )
         }
        return visitEachChild(node, visit, context)
