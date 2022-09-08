@@ -2,7 +2,7 @@ import { NodeFactory, NodeFlags, Statement, SyntaxKind } from "typescript";
 
 export function getInsertCode() {
   return `
-window.onMountInsertCssInlineStyle = function (id, code) {
+function _onMountCssInlineStyle (id, code) {
   let style = document.querySelector(\`#\${id}\`)
   if (!style) {
     style = document.createElement('style')
@@ -17,7 +17,7 @@ window.onMountInsertCssInlineStyle = function (id, code) {
   return style
 };
 
-window.onCleanupRemoveCssInlineStyle = function (style) {
+function _onCleanupCssInlineStyle (style) {
   if (style) {
     const newCount = parseFloat(style.dataset.count || '0') - 1
     if (newCount > 0) {
@@ -34,11 +34,11 @@ window.onCleanupRemoveCssInlineStyle = function (style) {
  * code
 let style: HTMLStyleElement | null ;
 onMount(() => {
-  style = onMountInsertCssInlineStyle('#id', code)
+  style = _onMountCssInlineStyle('#id', code)
 })
 
 onCleanup(() => {
-  onCleanupRemoveCssInlineStyle(style)
+  _onCleanupCssInlineStyle(style)
   style = undefined
 })
  */
@@ -76,7 +76,7 @@ export const getStyleManageCode = (factory: NodeFactory, id: string, code: strin
             factory.createIdentifier(id),
             factory.createToken(SyntaxKind.EqualsToken),
             factory.createCallExpression(
-              factory.createIdentifier("onMountInsertCssInlineStyle"),
+              factory.createIdentifier("_onMountCssInlineStyle"),
               undefined,
               [factory.createStringLiteral(`${id}`), factory.createIdentifier(code)]
             )
@@ -97,7 +97,7 @@ export const getStyleManageCode = (factory: NodeFactory, id: string, code: strin
         factory.createBlock(
           [
             factory.createExpressionStatement(factory.createCallExpression(
-              factory.createIdentifier("onCleanupRemoveCssInlineStyle"),
+              factory.createIdentifier("_onCleanupCssInlineStyle"),
               undefined,
               [factory.createIdentifier(id)]
             )),
