@@ -24,19 +24,20 @@ export default (): Plugin =>  {
       target = isTarget(cf.build.target) ? cf.build.target : 'ES2015'
     },
     async load(id) {
-      if (id.endsWith('.tsx')) {
-        const file = await readFile(id, {
+      const filePath = id.split('?')[0]
+      if (filePath.endsWith('.tsx')) {
+        const file = await readFile(filePath, {
           encoding: 'utf8'
         })
         if (inlineCssModuleFileRE.test(file)) {
-          return wrapInlineCss(id, file, target!)
+          return wrapInlineCss(filePath, file, target!)
         }
         return file
       }
     },
     renderChunk(code, chunk) {
       if (chunk.isEntry) {
-        return { code: `${getInsertCode()}${code}` }
+        return `${getInsertCode()}${code}`
       }
     },
     writeBundle(_opts, bundles) {

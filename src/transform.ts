@@ -54,15 +54,15 @@ export function wrapInlineCss(name: string, file: string, target: keyof typeof S
           const importString  = getImportString(node)
           const importIdentifier = node.getChildren().find(n => isImportClause(n))?.getChildren().find(n => isIdentifier(n))?.getText()
 
-          if (importString && importIdentifier && inlineCssModuleLineRE.test(importString)) {
-            const inlineStyle = `${importIdentifier}InlineContent`
-            inlineStylesNames.push(inlineStyle)
+          if (importString && inlineCssModuleLineRE.test(importString)) {
+            const styleIdentifierName = nanoid()
+            inlineStylesNames.push(styleIdentifierName)
             return factory.createSourceFile(
               [
                 node,
                 factory.createImportDeclaration(
                   undefined,
-                  factory.createImportClause(false, factory.createIdentifier(inlineStyle), undefined),
+                  factory.createImportClause(false, factory.createIdentifier(styleIdentifierName), undefined),
                   factory.createStringLiteral(`${importString}?inline`)
                 )
               ],
